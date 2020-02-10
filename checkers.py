@@ -170,7 +170,7 @@ def execute_move(board_ref, move, player):
     return board
 
 #fitness fuinction for a given board state
-def get_fitness(board, player = "Rr"):
+def get_fitness(board, player = "Bb"):
     enemy = ("Rr" if (player == "Bb") else "Bb")
     score = float()
     for (i, row) in enumerate(board):
@@ -212,6 +212,7 @@ if __name__ == '__main__':
         exit(1)
 
     board = sys.argv[1].replace("\"","").split(",")
+    #board = '"b",null,"R",null,null,null,null,null,null,null,null,"r",null,"R",null,null,"r",null,null,null,null,null,null,null,null,"r",null,"r",null,"r",null,null,null,null,null,null,null,null,null,null,null,null,null,"r",null,null,null,null,"r",null,null,null,null,null,null,null,null,"r",null,"r",null,null,null,"r"'.replace("\"","").split(",")
     #board = "b,null,b,null,b,null,b,null"
     #board += ",null,null,null,b,null,null,null,b"
     #board += ",b,null,b,null,b,null,b,null"
