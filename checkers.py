@@ -432,9 +432,9 @@ if __name__ == '__main__':
                 board[i][j] = None;
     
     root = Node(board, player)
-    fill_tree(root, 3)
-    
-    score = mini_max(root, True, float('-inf'), float('inf'))
+    fill_tree(root, 5)
+    brain = Brain(player, [0.61, 3.03, 1.95, 3.9, 1.17, 3.88, 1.54, 0.64, 2.16]) 
+    score = mini_max(root, brain, True, float('-inf'), float('inf'))
     move = None
     for child in root.children:
         if( child.score == score ):
