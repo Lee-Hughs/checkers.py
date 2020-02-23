@@ -415,34 +415,55 @@ def mutate_winners(player, pop_size, winners):
 
 #parse arguments, and start script
 if __name__ == '__main__':
-    #check the number of arguements is correct
-    if(len(sys.argv) != 3):
-        usage()
-        exit(1)
-    board = sys.argv[1].replace("\"","").split(",")
-    #change 1d array to 2d array
-    board = [board[:8],board[8:16],board[16:24],board[24:32],board[32:40],board[40:48],board[48:56],board[56:64]]
 
-    player = sys.argv[1]
+    red_bots = []
+    black_bots = []
+    with open("red_bots.json") as json_file:
+        data = json.load(json_file)
+        for brain in data:
+            red_bots.append(Brain("Rr", brain))
+    with open("black_bots.json") as json_file:
+        data = json.load(json_file)
+        for brain in data:
+            black_bots.append(Brain("Bb", brain))
+    gen = 0
+    pop_size = len(red_bots)
+    for gen in range(30):
+        winners = []
+        losers = []
+        draws = []
+        print("Starting generation ", gen)
+        winner = None 
+        for x in range(len(red_bots)): 
+            brain1 = red_bots[x]
+            brain2 = black_bots[x]
+            winner = play_game(brain1, brain2)
+            if(winner == "Rr"):
+                winners.append(brain1)
+                losers.append(brain2)
+            elif(winner == "Bb"):
+                winners.append(brain2)
+                losers.append(brain1)
+            else:
+                draws.append(brain1)
+                draws.append(brain2)
+        f = open("training_data.txt", "a")
+        f.write("\nGeneration " + str(gen) + "\n")
+        f.write("\nWinners:\n")
+        for brain in winners:
+            f.write(str(brain.weights) + "\n")
+        #f.write("\nLosers:\n")
+        #for brain in losers:
+            #f.write(str(brain.weights) + "\n")
+        #f.write("\nDraws:\n")
+        #for brain in draws:
+            #f.write(str(brain.weights) + "\n")
+        print("starting mutating gen ", gen)
+        red_bots = mutate_winners("Rr", pop_size, winners)
+        black_bots = mutate_winners("Bb", pop_size, winners)
+        
 
-    #change all instances of "null" string to None
-    for (i, row) in enumerate(board):
-        for (j, value) in enumerate(row):
-            if(value == "null"):
-                board[i][j] = None;
-    
-    root = Node(board, player)
-    fill_tree(root, 3)
-    
-    score = mini_max(root, True, float('-inf'), float('inf'))
-    move = None
-    for child in root.children:
-        if( child.score == score ):
-            print(child.move)
-            move = child
-            break
+    f.close()
+    print("done training this set")
     #for row in move.board:
         #print(row)
-
-
-
